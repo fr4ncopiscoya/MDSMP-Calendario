@@ -51,26 +51,30 @@
             <ul class="navbar-nav" id="navbar-nav">
                 <li class="menu-title"><span data-key="t-menu">Menu</span></li>
                 <ng-container *ngFor="let menuItem of datosMenu">
-                    <li class="nav-item" *ngIf="menuItem.sub_menu && menuItem.sub_menu.length > 0">
-                        <button class="nav-link menu-link" (click)="toggleCollapse(menuItem.obj_descri.toLowerCase())">
-                            <i class="bi bi-journal-medical"></i> <span>{{ menuItem.obj_descri }}</span>
-                            <i class="bi"
-                                [ngClass]="{'bi-chevron-down': isCollapsed(menuItem.obj_descri.toLowerCase()), 'bi-chevron-up': !isCollapsed(menuItem.obj_descri.toLowerCase())}"></i>
-                        </button>
-                        <div class="collapse menu-dropdown" [id]="menuItem.obj_descri.toLowerCase()"
-                            [ngClass]="{'show': !isCollapsed(menuItem.obj_descri.toLowerCase())}">
-                            <ul class="nav nav-sm flex-column">
-                                <li style="cursor: pointer;" class="nav-item" *ngFor="let subItem of menuItem.sub_menu">
-                                    <a (click)="getLinkMenu(subItem)" class="nav-link">{{ subItem.obj_descri }}</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="nav-item" *ngIf="menuItem.obj_chkpin > 0">
-                        <a class="nav-link menu-link" href="">
-                            <span>{{ menuItem.obj_descri }}</span>
-                        </a>
-                    </li>
+                    <ng-container *ngIf="menuItem.obj_chkpin > 0">
+                        <li class="nav-item" *ngIf="menuItem.sub_menu && menuItem.sub_menu.length > 0">
+                            <button class="nav-link menu-link"
+                                (click)="toggleCollapse(menuItem.obj_descri.toLowerCase())">
+                                <i class="bi bi-journal-medical"></i> <span>{{ menuItem.obj_descri }}</span>
+                                <i class="bi"
+                                    [ngClass]="{'bi-chevron-down': isCollapsed(menuItem.obj_descri.toLowerCase()), 'bi-chevron-up': !isCollapsed(menuItem.obj_descri.toLowerCase())}"></i>
+                            </button>
+                            <div class="collapse menu-dropdown" [id]="menuItem.obj_descri.toLowerCase()"
+                                [ngClass]="{'show': !isCollapsed(menuItem.obj_descri.toLowerCase())}">
+                                <ul class="nav nav-sm flex-column" *ngIf="menuItem.obj_chkpin > 0">
+                                    <li style="cursor: pointer;" class="nav-item"
+                                        *ngFor="let subItem of menuItem.sub_menu">
+                                        <a (click)="getLinkMenu(subItem)" class="nav-link">{{ subItem.obj_descri }}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item" *ngIf="!menuItem.sub_menu || menuItem.sub_menu.length === 0">
+                            <a class="nav-link menu-link" href="">
+                                <span>{{ menuItem.obj_descri }}</span>
+                            </a>
+                        </li>
+                    </ng-container>
                 </ng-container>
             </ul>
         </div>
