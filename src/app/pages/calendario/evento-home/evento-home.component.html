@@ -1,0 +1,166 @@
+<div class="main-content">
+    <div class="page-content" style="padding-bottom: 15px;">
+        <!-- <h3 style="text-align: center; border-bottom: 1px solid #000; margin-bottom: 20px;">MANTENIMIENTO CAJA CHICA
+        </h3> -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0">FILTROS DE BUSQUEDA - EVENTOS </h4>
+                    </div>
+                </div>
+            </div>
+            <div class="card container-fluid" id="cardsuperior" style="display: -webkit-box;">
+                <!-- <div class="" style="padding: 10px; justify-content: space-between; display: flex;">
+                    <div class="" style="display: flex;justify-content: center;align-items: center;">
+                        <label for="colFormLabelSm" class=" col-form-label col-form-label-sm"
+                            style="margin-right: 25px;">Unidad Orgánica</label>
+                        <input disabled="" type="text" [(ngModel)]="cca_anyper"
+                            class="form-control form-control-sm disabled-color" id="colFormLabelSm"
+                            style="margin: 0 5px; text-align: center;">
+                    </div>
+                </div> -->
+
+                <!-- Row1 -->
+                <div class="col-md-6 mb-2" style="margin-right: 5px;">
+                    <label for="" class="form-label col-form-label col-form-label-sm">Unidad Orgánica
+                    </label>
+                    <div class="">
+                        <input type="text" disabled="" [(ngModel)]="area"
+                            class="form-control form-control-sm  disabled-color" id="montoinfra" />
+                    </div>
+                </div>
+                <!-- <div class="col-md-1 mb-2">
+                </div> -->
+                <div class="col-md-2 mb-2" style="margin-right: 5px;">
+                    <label for="" class="form-label col-form-label col-form-label-sm">Fecha Inicio </label>
+                    <div class="">
+                        <input type="date" [(ngModel)]="eve_fecini" class="form-control form-control-sm" id="" />
+                    </div>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <label for="" class="form-label col-form-label col-form-label-sm">Fecha Fin</label>
+                    <div class="">
+                        <input type="date" [(ngModel)]="eve_fecfin" class="form-control form-control-sm" id="" />
+                    </div>
+                </div>
+                <div class="col-md-2 mb-2" style="display: flex; justify-content: center; margin-top: 29px;">
+                    <label for="" class="form-label col-form-label col-form-label-sm" style="display: none;">Fecha
+                        Fin</label>
+                    <div class="">
+                        <button type="button" (click)="listarEventos()" class="btn btn-primary btn-label btn-sm">
+                            <i class="ri-search-line label-icon align-middle fs-16 me-2"></i>
+                            Consultar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-h-100">
+                        <div class="card-body">
+                            <div>
+                                <table id="tablaAplicacion" datatable [dtOptions]="dtOptionsModal"
+                                    [dtTrigger]="dtTrigger" class=" align-middle mb-0 " style="width: 100%;">
+                                    <thead class="table-light">
+                                        <tr style="font-size: 12px;">
+                                            <th class="text-center">Nº</th>
+                                            <th class="text-center">Actividad - Evento</th>
+                                            <th class="text-center">Fecha Inicio</th>
+                                            <th class="text-center">Hora Fin</th>
+                                            <th class="text-center">Fech`a Fin</th>
+                                            <th class="text-center">Hora Fin</th>
+                                            <th class="text-center">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="overflow-y: scroll;">
+                                        <tr ngClass="" *ngFor="let data of datosEvento; let i = index"
+                                            class="text-center tr_hover">
+                                            <td>{{ i ++ 1}}</td>
+                                            <td>{{ data.eve_nombre }}</td>
+                                            <td>{{ data.eve_fecini | date: 'dd/MM/yyyy' }}</td>
+                                            <td>{{ data.eve_horini }}</td>
+                                            <td>{{ data.eve_fecfin | date: 'dd/MM/yyyy'}}</td>
+                                            <td>{{ data.eve_horfin }}</td>
+                                            <td>
+                                                <div class="d-flex center" style="justify-content: center;">
+                                                    <button type="button" title="Editar" style="margin-left: 2px;"
+                                                        class="btn btn-sm btn-primary btn-icon">
+                                                        <i class="ri-pencil-fill align-middle fs-20"></i>
+                                                    </button>
+                                                    <button type="button" title="Editar" style="margin-left: 2px;"
+                                                        class="btn btn-sm btn-danger btn-icon">
+                                                        <i class="ri-close-fill align-middle fs-20"></i>
+                                                    </button>
+                                                    <!-- <button type="button" title="Editar" style="margin-left: 2px;"
+                                                        class="btn btn-sm btn-primary btn-icon"
+                                                        data-bs-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false">
+                                                        <i class="ri-pencil-fill align-middle fs-20"></i>
+                                                    </button> -->
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="">
+                                    <button type="button" [routerLink]="['/evento-crear']"
+                                        class="btn btn-primary btn-label btn btn-sm" style="margin-right: 8px;">
+                                        <i class="ri-add-line label-icon align-middle fs-16"></i>
+                                        Nuevo
+                                    </button>
+                                    <!-- <button type="button" (click)="exportarCajaXls()"
+                                        class="btn btn-success btn-label btn btn-sm">
+                                        <i class="ri-add-line label-icon align-middle fs-16"></i>
+                                        Excel
+                                    </button> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- <ng-template #listarPeriodo>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header" style="display: flex; justify-content: space-between;">
+                    <h4 class="card-title mb-0">Listar Periodos</h4>
+                    <a class="" style="cursor: pointer;" (click)="cerrarModal('listar-periodo')"> <i
+                            style="font-size: 1.50rem; " class=" ri-close-fill"></i></a>
+                </div>
+                <div class="card-body">
+                    <app-gestion-periodos-listar (confirmClicked)="confirmClick($event)"></app-gestion-periodos-listar>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template> -->
+
+<ng-template #registarEvento>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header" style="display: flex; justify-content: space-between;">
+                    <h4 class="card-title mb-0">{{txt_tittle}}</h4>
+                    <a class="" style="cursor: pointer;" (click)="cerrarModal('registar-evento')"> <i
+                            style="font-size: 1.50rem; " class=" ri-close-fill"></i></a>
+                </div>
+                <div class="card-body">
+                    <app-evento-crear (cajaRegistrada)="actualizarData()" [verBtnModal]="btnVerData"></app-evento-crear>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-square-spin" [fullScreen]="false">
+    <p style="color: white">Buscando información...</p>
+</ngx-spinner>

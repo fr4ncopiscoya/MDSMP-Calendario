@@ -1,0 +1,74 @@
+.pointer {
+    cursor: pointer !important;
+}
+
+.ng-select-container {
+    border: 1px solid #EFF2F7 !important;
+}
+
+.ng-select .ng-select-container {
+    color: red
+}
+
+.ng-select.ng-select-single .ng-select-container {
+    min-height: 10px;
+}
+
+.bg-smp-color {
+    background-color: #1D58A3;
+}
+
+.tc-white {
+    color: white
+}
+
+.c-red {
+    color: red5
+}
+
+tbody,
+td,
+tfoot,
+th,
+thead,
+tr {
+    border-color: #EFF2F7;
+    border-style: solid;
+    border-width: 0;
+}
+
+.dataTables_filter {
+    margin-bottom: 10px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: transparent !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 5px !important;
+    margin: 0 5px !important;
+    cursor: pointer !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: #EFF2F7 !important;
+    font-weight: bold;
+}
+
+.page-content {
+    height: auto;
+    background: #F3F6F9;
+}
+
+.input-disabled {
+    background: #F3F6F9;
+}
+
+.dt-buttons {
+    display: none;
+}
+
+select.form-select.form-select-sm {
+    text-align: right !important;
+    padding: 0px 4.2px !important;
+}

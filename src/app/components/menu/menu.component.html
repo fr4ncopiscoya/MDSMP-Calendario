@@ -1,0 +1,81 @@
+<div class="app-menu navbar-menu">
+    <div class="navbar-brand-box">
+        <a routerLink="/" class="logo logo-dark">
+            <span class="logo-sm mt-5">
+                <img src="./assets/images/logo.png" alt="" height="60" class="imgLogoSmp" />
+            </span>
+            <span class="logo-lg mt-5">
+                <img style="margin-top: 10" src="./assets/images/logo.png" alt="" height="60" />
+            </span>
+        </a>
+        <a routerLink="/" class="logo logo-light">
+            <span class="logo-sm">
+                <img src="./assets/images/logo.png" alt="" height="26" />
+            </span>
+            <span class="logo-lg">
+                <img src="./assets/images/logo.png" alt="" height="26" />
+            </span>
+        </a>
+        <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
+            id="vertical-hover">
+            <i class="ri-record-circle-line"></i>
+        </button>
+    </div>
+    <div id="scrollbar">
+        <!-- <div class="container-fluid">
+  <div id="two-column-menu"></div>
+  <ul class="navbar-nav" id="navbar-nav">
+    <li class="menu-title"><span data-key="t-menu">Menu</span></li>
+  
+    <li class="nav-item">
+      <a class="nav-link menu-link" href="#cajaChica" data-bs-toggle="collapse" role="button" aria-expanded="false"
+        aria-controls="cajaChica">
+        <i class="bi bi-journal-medical"></i> <span data-key="t-pages">Caja Chica</span>
+      </a>
+      <div class="collapse menu-dropdown" id="cajaChica">
+        <ul class="nav nav-sm flex-column">
+          <li class="nav-item">
+            <a href="" class="nav-link" data-key="t-certificado">Montos Vale </a>
+          </li>
+          <li class="nav-item">
+            <a href="" class="nav-link" (click)="navigateCajaMantenimiento()" data-key="t-starter"> Mantenimiento
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+  </div> -->
+
+        <div class="container-fluid">
+            <ul class="navbar-nav" id="navbar-nav">
+                <li class="menu-title"><span data-key="t-menu">Menu</span></li>
+                <ng-container *ngFor="let menuItem of datosMenu">
+                    <li class="nav-item" *ngIf="menuItem.sub_menu && menuItem.sub_menu.length > 0">
+                        <button class="nav-link menu-link" (click)="toggleCollapse(menuItem.obj_descri.toLowerCase())">
+                            <i class="bi bi-journal-medical"></i> <span>{{ menuItem.obj_descri }}</span>
+                            <i class="bi"
+                                [ngClass]="{'bi-chevron-down': isCollapsed(menuItem.obj_descri.toLowerCase()), 'bi-chevron-up': !isCollapsed(menuItem.obj_descri.toLowerCase())}"></i>
+                        </button>
+                        <div class="collapse menu-dropdown" [id]="menuItem.obj_descri.toLowerCase()"
+                            [ngClass]="{'show': !isCollapsed(menuItem.obj_descri.toLowerCase())}">
+                            <ul class="nav nav-sm flex-column">
+                                <li style="cursor: pointer;" class="nav-item" *ngFor="let subItem of menuItem.sub_menu">
+                                    <a (click)="getLinkMenu(subItem)" class="nav-link">{{ subItem.obj_descri }}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item" *ngIf="menuItem.obj_chkpin > 0">
+                        <a class="nav-link menu-link" href="">
+                            <span>{{ menuItem.obj_descri }}</span>
+                        </a>
+                    </li>
+                </ng-container>
+            </ul>
+        </div>
+
+
+    </div>
+    <div class="sidebar-background"></div>
+</div>
