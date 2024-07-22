@@ -4,6 +4,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { InicioComponent } from './pages/inicio/inicio.component';
 import { EventoHomeComponent } from './pages/calendario/evento-home/evento-home.component';
 import { EventoCrearComponent } from './pages/calendario/evento-crear/evento-crear.component';
+import { CalendarioComponent } from './pages/calendario/calendario/calendario.component';
 
 
 export const ROUTES: Routes = [
@@ -13,6 +14,7 @@ export const ROUTES: Routes = [
 
   { path: 'eventos', component: EventoHomeComponent },
   { path: 'evento-crear', component: EventoCrearComponent },
+  { path: 'calendario', component: CalendarioComponent },
 
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: '**', pathMatch: 'full', redirectTo: 'login' },

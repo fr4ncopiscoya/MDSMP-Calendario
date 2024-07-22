@@ -29,6 +29,10 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 import { FileSizePipe } from './pages/calendario/evento-crear/file-size-pipe';
 import { FilePreviewPipe } from './pages/calendario/evento-crear/file-preview-pipe';
+import { CalendarioComponent } from './pages/calendario/calendario/calendario.component';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -43,7 +47,8 @@ import { FilePreviewPipe } from './pages/calendario/evento-crear/file-preview-pi
     EventoCrearComponent,
 
     FileSizePipe,
-    FilePreviewPipe
+    FilePreviewPipe,
+    CalendarioComponent
   ],
   imports: [
     InputMaskModule.forRoot({ inputSelector: 'input', isAsync: true }),
@@ -63,6 +68,10 @@ import { FilePreviewPipe } from './pages/calendario/evento-crear/file-preview-pi
     TreeviewModule.forRoot(),
     RouterModule.forRoot(ROUTES),
     CKEditorModule,
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    }),
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
@@ -74,6 +83,7 @@ import { FilePreviewPipe } from './pages/calendario/evento-crear/file-preview-pi
     TooltipModule,
     LoginComponent,
     LoginGuard,
+    DatePipe
   ],
   bootstrap: [AppComponent],
 })
