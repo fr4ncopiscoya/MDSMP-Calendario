@@ -232,6 +232,11 @@ export class EventoHomeComponent implements OnInit {
     // this.consultarCajaChica()
   }
 
+  goToCreate(data: any) {
+    console.log("data: ", data);
+    this.router.navigateByUrl('/evento-crear')
+  }
+
   goBackTo() {
     switch (this.mensa) {
       case 'Cierre Apertura Caja Chica Actualizada Correctamente':

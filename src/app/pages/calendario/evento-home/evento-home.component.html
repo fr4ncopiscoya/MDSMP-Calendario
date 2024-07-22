@@ -71,6 +71,7 @@
                                             <th class="text-center">Hora Fin</th>
                                             <th class="text-center">Fech`a Fin</th>
                                             <th class="text-center">Hora Fin</th>
+                                            <th class="text-center">Estado</th>
                                             <th class="text-center">Acciones</th>
                                         </tr>
                                     </thead>
@@ -83,13 +84,17 @@
                                             <td>{{ data.eve_horini }}</td>
                                             <td>{{ data.eve_fecfin | date: 'dd/MM/yyyy'}}</td>
                                             <td>{{ data.eve_horfin }}</td>
+                                            <td style="font-weight: bold" [style.color]="data.est_colors">{{
+                                                data.est_descri
+                                                }}</td>
                                             <td>
                                                 <div class="d-flex center" style="justify-content: center;">
-                                                    <button type="button" title="Editar" style="margin-left: 2px;"
+                                                    <button type="button" title="Editar" (click)="goToCreate(data)"
+                                                        style="margin-left: 2px;"
                                                         class="btn btn-sm btn-primary btn-icon">
                                                         <i class="ri-pencil-fill align-middle fs-20"></i>
                                                     </button>
-                                                    <button type="button" title="Editar" style="margin-left: 2px;"
+                                                    <button type="button" title="" style="margin-left: 2px;"
                                                         class="btn btn-sm btn-danger btn-icon">
                                                         <i class="ri-close-fill align-middle fs-20"></i>
                                                     </button>

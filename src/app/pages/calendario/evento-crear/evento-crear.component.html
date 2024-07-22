@@ -1,5 +1,5 @@
 <div class="main-content">
-    <div class="page-content" style="padding-bottom: 15px;" >
+    <div class="page-content" style="padding-bottom: 15px;">
         <!-- <h3 style="text-align: center; border-bottom: 1px solid #000; margin-bottom: 20px;">MANTENIMIENTO CAJA CHICA
         </h3> -->
         <div class="container-fluid">
@@ -55,7 +55,10 @@
                                                     class="form-control form-control-sm" id="" />
                                             </div>
                                         </div>
-                                        <div class="col-md-2 mb-2">
+                                        <!-- <div class="col-md-2 mb-2">
+
+                                        </div> -->
+                                        <div class="col-md-4 mb-2">
                                             <label for=""
                                                 class="form-label col-form-label col-form-label-sm">PRESUPUESTO</label>
                                             <div class="">
@@ -65,7 +68,17 @@
                                                     [inputMask]="currencyInputMask" placeholder="S/. 0.00" />
                                             </div>
                                         </div>
-                                        <div class="col-md-2 mb-2">
+
+                                        <!-- Row2 -->
+                                        <div class="col-md-8 mb-2">
+                                            <label for="" class=" form-label col-form-label col-form-label-sm">NOMBRE
+                                                EVENTO * <span style="color: red;">Máx.( 100 caracteres)</span> *
+                                            </label>
+                                            <input id="" type="text" [(ngModel)]="eve_nombre"
+                                                oninput="this.value = this.value.toUpperCase()"
+                                                class="form-control form-control-sm">
+                                        </div>
+                                        <div class="col-md-4 mb-2">
                                             <label for="" class="form-label col-form-label col-form-label-sm">ALIAS *
                                                 <span style="color: red;">Máx. (20 caracteres)</span> * </label>
                                             <div class="">
@@ -73,16 +86,6 @@
                                                     oninput="this.value = this.value.toUpperCase()"
                                                     class="form-control form-control-sm" id="" />
                                             </div>
-                                        </div>
-
-                                        <!-- Row2 -->
-                                        <div class="col-md-12 mb-2">
-                                            <label for="" class=" form-label col-form-label col-form-label-sm">NOMBRE
-                                                EVENTO * <span style="color: red;">Máx.( 100 caracteres)</span> *
-                                            </label>
-                                            <input id="" type="text" [(ngModel)]="eve_nombre"
-                                                oninput="this.value = this.value.toUpperCase()"
-                                                class="form-control form-control-sm">
                                         </div>
 
                                         <!-- Row 3 -->
