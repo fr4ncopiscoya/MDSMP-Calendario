@@ -1,6 +1,6 @@
-import { Component, OnInit, AfterViewInit,ElementRef,Output,EventEmitter, Input} from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, Output, EventEmitter, Input } from '@angular/core';
 import { ChangeDetectionStrategy, ViewChild, TemplateRef } from '@angular/core';
-import { startOfDay, endOfDay, subDays, addDays, endOfMonth, isSameDay, isSameMonth, addHours } from 'date-fns';
+import { startOfDay, endOfDay, subDays, addDays, endOfMonth, isSameDay, isSameMonth, addHours, startOfMonth, format } from 'date-fns';
 import { Subject } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CalendarEvent, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
@@ -9,8 +9,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataTableDirective } from 'angular-datatables';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import Swal from 'sweetalert2';
 import { CajachicaService } from 'src/app/services/cajachica.service';
 import { AppComponent } from 'src/app/app.component';
 import { CalendarioService } from 'src/app/services/calendario.service';
@@ -40,7 +38,9 @@ export class CalendarioComponent implements OnInit {
   @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
 
   dataUsuario: any
-  
+
+  verCalendario: boolean = false;
+
   @Input() locale: string = 'es';
 
   view: CalendarView = CalendarView.Month;
@@ -69,22 +69,25 @@ export class CalendarioComponent implements OnInit {
   ];
   refresh = new Subject<void>();
 
-  events: CalendarEvent[] = [
-    {
-      start: addHours(startOfDay(new Date()), 2),
-      end: addHours(new Date(), 2),
-      title: 'A draggable and resizable event',
-      color: { ...colors['yellow'] },
-      actions: this.actions,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true,
-      },
-      draggable: true,
-    },
-  ];
-  
+  events: CalendarEvent[] = [];
+
+  // events: CalendarEvent[] = [
+  //   {
+  //     start: addHours(startOfDay(new Date()), 2),
+  //     end: addHours(new Date(), 2),
+  //     title: 'A draggable and resizable event',
+  //     color: { ...colors['yellow'] },
+  //     actions: this.actions,
+  //     resizable: {
+  //       beforeStart: true,
+  //       afterEnd: true,
+  //     },
+  //     draggable: true,
+  //   },
+  // ];
+
   activeDayIsOpen: boolean = true;
+
 
   constructor(
     private modal: NgbModal,
@@ -95,15 +98,54 @@ export class CalendarioComponent implements OnInit {
     private datePipe: DatePipe,
     private cajachicaService: CajachicaService,
     private calendarioService: CalendarioService) {
-      this.appComponent.login = false;
-      const dataSistema = localStorage.getItem('dataUsuario');
-      this.dataUsuario = JSON.parse(dataSistema);
+    this.appComponent.login = false;
+    const dataSistema = localStorage.getItem('dataUsuario');
+    this.dataUsuario = JSON.parse(dataSistema);
 
-      const dataUser = localStorage.getItem('dataUser');
-      this.dataUsuario = JSON.parse(dataUser);
-    }
+    const dataUser = localStorage.getItem('dataUser');
+    this.dataUsuario = JSON.parse(dataUser);
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.listarEventos(format(startOfMonth(this.viewDate), 'yyyy-MM-dd'), format(endOfMonth(this.viewDate), 'yyyy-MM-dd'));
+  }
+
+  listarEventos(fechaInicio: string, fechaFin: string) {
+    let post = {
+      p_eve_id: 0,
+      p_ard_id: this.dataUsuario[0].ard_id,
+      p_eve_fecini: fechaInicio,
+      p_eve_fecfin: fechaFin
+    };
+    console.log(post);
+    this.spinner.show();
+    this.calendarioService.listarEventos(post).subscribe({
+      next: (data: any) => {
+        this.spinner.hide();
+        data.map((item: any) =>
+          this.events.push({
+            start: startOfDay(new Date(item.eve_fhoini)),
+            end: new Date(item.eve_fhofin),
+            title: item.eve_nombre,
+            color: { ...colors['yellow'] },
+            actions: this.actions,
+            allDay: true,
+            resizable: {
+              beforeStart: true,
+              afterEnd: true,
+            },
+            draggable: true,
+          })
+        );
+        this.verCalendario = true;
+        console.log(this.events);
+      },
+      error: (error: any) => {
+        this.spinner.hide();
+        console.log(error);
+      },
+    });
+  }
 
   getMonthName(month: number): string {
     const months = [
@@ -112,26 +154,38 @@ export class CalendarioComponent implements OnInit {
     ];
     return months[month];
   }
-  
+
   getFormattedDate(): string {
     const month = this.viewDate.getMonth();
     const year = this.viewDate.getFullYear();
     return `${this.getMonthName(month)} ${year}`;
-  } 
-
-  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
-    if (isSameMonth(date, this.viewDate)) {
-      if (
-        (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
-        events.length === 0
-      ) {
-        this.activeDayIsOpen = false;
-      } else {
-        this.activeDayIsOpen = true;
-      }
-      this.viewDate = date;
-    }
   }
+
+  dayClicked({ date, events }: {
+    date: Date; events: CalendarEvent[]
+  }): void {
+    // if (isSameMonth(date, this.viewDate)) {
+    //   if (
+    //     (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
+    //     events.length === 0
+    //   ) {
+    //     this.activeDayIsOpen = false;
+    //   } else {
+    //     this.activeDayIsOpen = true;
+    //   }
+    // }
+    if (isSameDay) {
+      this.activeDayIsOpen = true
+    }
+    this.viewDate = date;
+    // this.listarEventos(format(startOfDay(date), 'yyyy-MM-dd'), format(endOfDay(date), 'yyyy-MM-dd'));
+  }
+
+  viewDateChanged({ date }: { date: Date }): void {
+    this.viewDate = date;
+    this.listarEventos(format(startOfMonth(date), 'yyyy-MM-dd'), format(endOfMonth(date), 'yyyy-MM-dd'));
+  }
+
 
   eventTimesChanged({
     event,

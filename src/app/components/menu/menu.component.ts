@@ -96,11 +96,6 @@ export class MenuComponent implements OnInit {
       next: (data: any) => {
         this.spinner.hide();
         this.datosMenu = data;
-        // if (data.obj_chkpin > 0) {
-        // } else {
-        //   console.log("nada");
-        // }
-
       },
       error: (error: any) => {
         this.spinner.hide();
@@ -122,8 +117,6 @@ export class MenuComponent implements OnInit {
   }
   getMenuID(enlace: any) {
     this.enlace = enlace;
-    console.log("enlace: ", this.enlace);
-
     this.router.navigateByUrl(this.enlace)
   }
 
