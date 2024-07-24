@@ -64,13 +64,14 @@
                                 <ul class="nav nav-sm flex-column" *ngIf="menuItem.obj_chkpin > 0">
                                     <li style="cursor: pointer;" class="nav-item"
                                         *ngFor="let subItem of menuItem.sub_menu">
-                                        <a (click)="getLinkMenu(subItem)" class="nav-link">{{ subItem.obj_descri }}</a>
+                                        <a (click)="getMenuID(menuItem.obj_enlace)" class="nav-link">{{
+                                            subItem.obj_descri }}</a>
                                     </li>
                                 </ul>
                             </div>
                         </li>
                         <li class="nav-item" *ngIf="!menuItem.sub_menu || menuItem.sub_menu.length === 0">
-                            <a class="nav-link menu-link" href="">
+                            <a (click)="getMenuID(menuItem.obj_enlace)" class="nav-link menu-link">
                                 <span>{{ menuItem.obj_descri }}</span>
                             </a>
                         </li>

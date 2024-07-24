@@ -120,14 +120,11 @@ export class MenuComponent implements OnInit {
   isCollapsed(id: string): boolean {
     return !this.collapsedMenus.has(id);
   }
+  getMenuID(enlace: any) {
+    this.enlace = enlace;
+    console.log("enlace: ", this.enlace);
 
-  getLinkMenu(data: any) {
-    this.valMenu = data.obj_id;
-    this.enlace = data.obj_enlace;
-    console.log(this.valMenu);
-    console.log(this.enlace);
-    this.router.navigate([this.enlace])
-
+    this.router.navigateByUrl(this.enlace)
   }
 
 
