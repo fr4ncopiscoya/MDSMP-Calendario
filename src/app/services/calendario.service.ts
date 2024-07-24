@@ -75,5 +75,44 @@ export class CalendarioService {
         })
       );
   }
+  
+  getUploadFilesarchivos(data: any) {
+    return this.httpClientUtils
+      .postQuery('calendario/eventos/uploadFilesArchivos', data)
+      .pipe(
+        map((data) => {
+          return data;
+        })
+      );
+  }
 
+  getArchivosEventosSel(data: any){
+    return this.httpClientUtils
+      .postQuery('calendario/eventos/Archivossel', data)
+      .pipe(
+        map((data) => {
+          return data;
+        })
+      );
+  }
+  
+  geteliminararchivos(data: any) {
+    return this.httpClientUtils
+      .postQuery('geteliminararchivos', data)
+      .pipe(
+        map((data) => {
+          return data;
+        })
+      );
+  }
+  
+  getVisualizarArchivos(data: any) {
+    return this.httpClientUtils
+      .postQuery('getvisualizarArchivos', data)
+      .pipe(
+        map((data) => {
+          return data;
+        })
+      );
+  }
 }
