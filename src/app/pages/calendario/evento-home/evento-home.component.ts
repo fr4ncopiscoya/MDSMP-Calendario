@@ -15,8 +15,6 @@ import { CajachicaService } from 'src/app/services/cajachica.service';
 import { AppComponent } from 'src/app/app.component';
 import { CalendarioService } from 'src/app/services/calendario.service';
 
-// import 'ckeditor5/ckeditor5.css';
-// import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 @Component({
   selector: 'app-evento-home',
@@ -31,13 +29,13 @@ export class EventoHomeComponent implements OnInit {
   //FORMULARIO
   form!: FormGroup;
 
+  filesarchivos: File[] = [];
+
   @ViewChild(DataTableDirective, { static: false })
   dtElement: any;
   dtElementModal: any;
 
   dtTrigger: Subject<void> = new Subject<void>();
-  // dtTriggerModal: Subject<void> = new Subject<void>();
-  // dtOptionsModal: any;
   dtOptionsModal: DataTables.Settings = {};
 
   btnVerData: boolean = true;
@@ -45,10 +43,15 @@ export class EventoHomeComponent implements OnInit {
   txt_tittle: string = ''
 
   //DATA
-  datosCajaChica: any
-  datosPeriodo: any
-  dataUsuario: any
-  datosEvento: any
+  datosCajaChica: any;
+  datosPeriodo  : any;
+  dataUsuario   : any;
+  datosEvento   : any;
+  dataArchivos  : any;
+
+  fb_evearchivos: number = 0;
+  numconveleg: number = 0;
+  carpetaactu: string = '';
 
   cca_anyper: number;
   cca_id: number;
@@ -68,31 +71,21 @@ export class EventoHomeComponent implements OnInit {
     private cajachicaService: CajachicaService,
     private calendarioService: CalendarioService
   ) {
-    // const fecha = new Date();
-    // const fechaActual = new Date().toISOString().split('T')[0];
-    // this.eve_fecfin = fechaActual
-
-    // const primerDiaDelMes = new Date(fecha.getFullYear(), fecha.getMonth(), 1);
-    // this.eve_fecini = primerDiaDelMes.toISOString().split('T')[0];
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
     this.dtOptionsModal = {
-      // paging: true,
-      // pagingType: 'numbers',
       info: false,
       scrollY: '520px',
       columnDefs: [
-        // { width: '500px', targets: 2 },
       ],
       language: {
-        // url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json"
       },
     }
+    
     this.appComponent.login = false;
     const dataSistema = localStorage.getItem('dataUsuario');
     this.dataUsuario = JSON.parse(dataSistema)
-
     const dataUser = localStorage.getItem('dataUser');
     this.dataUsuario = JSON.parse(dataUser)
     this.area = this.dataUsuario[0].ard_descri
@@ -102,15 +95,10 @@ export class EventoHomeComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
-    // this.dtTriggerModal.unsubscribe();
   }
 
   ngAfterViewInit() {
     this.dtTrigger.next();
-    // this.dtTriggerModal.next();
-
-
-    /* (document.querySelector('.dataTables_scrollBody') as HTMLElement).style.top = '150px'; */
   }
 
   private getIconByErrorCode(errorCode: number): 'error' | 'warning' | 'info' | 'success' {
@@ -120,8 +108,7 @@ export class EventoHomeComponent implements OnInit {
     if (errorCode === 0) {
       return 'success';
     }
-    // Puedes agregar más condiciones aquí para otros códigos de error y sus iconos correspondientes
-    return 'info'; // Valor por defecto si no se cumple ninguna condición
+    return 'info';
   }
 
   private errorSweetAlert(icon: 'error' | 'warning' | 'info' | 'success' = 'error', callback?: () => void) {
@@ -172,6 +159,11 @@ export class EventoHomeComponent implements OnInit {
     this.modalRefs['registar-evento'] = this.modalService.show(template, { id: 1, class: 'modal-lg', backdrop: 'static', keyboard: false });
   }
 
+  modalArchivosEvento(template: TemplateRef<any> , data: any) {
+    this.fb_evearchivos = data['eve_id'];
+    this.fillarchivosSel();
+    this.modalRefs['archivos-evento']  = this.modalService.show(template, { id: 1, class: 'modal-lg', backdrop: 'static', keyboard: false });
+  }
   //========================================================================================================================
 
   actualizarHome(value: any) {
@@ -291,5 +283,170 @@ export class EventoHomeComponent implements OnInit {
     }
   }
 
+  //PARA AGREGAR EL ARCHIVO
+  onSelectarchivos(event:any) {
+    if (event.addedFiles.length == 1) {
+      if (this.filesarchivos.length < 1) {
+        this.filesarchivos.push(...event.addedFiles);
+        (document.querySelector('#botonsubcomuni') as HTMLElement).style.display = 'block';
+      } else {
+        (document.querySelector('#botonsubcomuni') as HTMLElement).style.display = 'none';
+      }
+    }else{
+      Swal.fire({
+        title: 'Error',
+        text: 'Ha intentado subir más de un archivo , porfavor ingresar solo uno',
+        icon: 'error',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Aceptar',
+      });
+    }
+  }
 
+  fillarchivosSel(){
+    let post = {
+      p_eve_id: this.fb_evearchivos,
+      p_epf_activo: 1
+    };    
+    this.calendarioService.getArchivosEventosSel(post).subscribe({
+      next: (data: any) => {
+        this.spinner.hide();
+        
+        console.log(data);
+        this.dataArchivos = data;
+
+      },
+      error: (error: any) => {
+        this.errorSweetAlert();
+        this.spinner.hide();
+        console.log(error);
+      },
+    });
+  }
+
+  onRemovearchivos(event:any) {
+    this.filesarchivos.splice(this.filesarchivos.indexOf(event), 1);
+    (document.querySelector('#botonsubcomuni') as HTMLElement).style.display = 'none';
+  }
+
+  uploadFilesarchivos() {
+    this.spinner.show();
+    const dataPost = new FormData();
+    dataPost.append('eve_id', this.fb_evearchivos.toString());
+    dataPost.append('p_usu_id',JSON.parse(localStorage.getItem("dataUsuario")).numid);
+    for (var i = 0; i < this.filesarchivos.length; i++) {
+      dataPost.append('files_archivos[]', this.filesarchivos[i]);
+    }
+    this.calendarioService.getUploadFilesarchivos(dataPost).subscribe((data: any) => {
+      if (data[0].error == 0) {
+        this.filesarchivos = [];
+        this.fillarchivosSel();
+        Swal.fire({
+          title: 'Exito',
+          text: data[0].mensa,
+          icon: 'success',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Aceptar',
+        });
+      } else if(data[0].error < 0){
+        this.filesarchivos = [];
+        this.spinner.hide();
+        Swal.fire({
+          title: 'Error',
+          text: data[0].mensa,
+          icon: 'error',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Aceptar',
+        });
+      }
+    });
+    (document.querySelector('#botonsubcomuni') as HTMLElement).style.display = 'none';
+  }
+
+  eliminararchivos(codig: number, ruta: string) {
+    const data_post = {
+      p_epf_id: codig,
+      ruta: ruta
+    };
+    this.calendarioService.geteliminararchivos(data_post).subscribe((data: any) => {
+      Swal.fire({
+        title: 'Mensaje',
+        html: "¿Seguro de Eliminar Registro?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ACEPTAR',
+        cancelButtonText: 'CANCELAR'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.calendarioService.geteliminararchivos(data_post).subscribe((data: any) => {
+            if (data[0].error == 0) {
+              Swal.fire({
+                title: 'Exito',
+                text: data[0].mensa.trim(),
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Aceptar',
+              }).then((result) => {
+                if (result.value) {
+                  setTimeout(() => {
+                    this.fillarchivosSel();
+                  }, 300);
+                }
+              });
+            } else {
+              Swal.fire({
+                title: 'Error',
+                text: data[0].mensa.trim(),
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Aceptar',
+              });
+            }
+          });
+        }
+      })
+    });
+  }
+
+  convertirNumeroceroIZQ(number:any, width:any) {
+    var numberOutput = Math.abs(number);
+    var length = number.toString().length;
+    var zero = "0";
+    if (width <= length) {
+      if (number < 0) {
+        return ("-" + numberOutput.toString());
+      } else {
+        return numberOutput.toString();
+      }
+    } else {
+      if (number < 0) {
+        return ("-" + (zero.repeat(width - length)) + numberOutput.toString());
+      } else {
+        return ((zero.repeat(width - length)) + numberOutput.toString());
+      }
+    }
+  }
+
+  linkDescargar(ruta: string, file: string, id: number) {
+    const data_post = {
+      ruta: ruta,
+      nombre: file,
+      id: id
+    };
+    this.calendarioService.getVisualizarArchivos(data_post).subscribe((data: any) => {
+      if (data.p_error==0) {
+        window.open(data.p_mensa);
+      }else{
+        Swal.fire({
+          title: 'Error',
+          text: data.p_mensa,
+          icon: 'error',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Aceptar',
+        });
+      }
+    });
+  }
 }

@@ -221,7 +221,7 @@ export class EventoCrearComponent implements OnInit {
       const validFiles = droppedFiles.filter(file => this.validateFile(file));
 
       if (this.files.length + validFiles.length > this.maxFiles) {
-        Swal.fire(`Solo puedes subir maximo ${this.maxFiles} archivos.`);
+        Swal.fire(`Solo puedes súbir maximo ${this.maxFiles} archivos.`);
         // alert(`You can only upload a maximum of ${this.maxFiles} files.`);
         return;
       }
@@ -248,14 +248,14 @@ export class EventoCrearComponent implements OnInit {
     const isValidName = !/\s/.test(fileName) && !/[áéíóúüñ]/i.test(fileName);
 
     if (!isValidName) {
-      Swal.fire(`El nombre del archivo "${fileName}" es invalido. No debe contener espacios ni cararateres esperiales.`);
+      Swal.fire(`El nombre del archivo "${fileName}" es inválido. No debe contener espacios ni cararateres esperiales.`);
       // alert(`The file name "${fileName}" is invalid. It must not contain spaces or special characters.`);
       return false;
     }
 
     // Verifica si el tamaño del archivo es mayor que el tamaño máximo permitido
     if (file.size > this.maxSize) {
-      Swal.fire(`El archivo "${fileName}" no puede exeder los 8M`);
+      Swal.fire(`El archivo "${fileName}" no puede exceder los 8M`);
       return false;
     }
 
@@ -406,9 +406,59 @@ export class EventoCrearComponent implements OnInit {
   }
 
   registrarEventos() {
-    // console.log("hora: ", this.eve_horeve);
-    // console.log("fecha: ", this.eve_feceve);
+    const dataPost = new FormData();
 
+    const montoLimpio = this.eve_monval ? this.eve_monval.replace('S/.', '').replace(',', '') : '';
+    const montoFloat = parseFloat(montoLimpio);
+
+    dataPost.append('p_eve_id', '0');
+    dataPost.append('p_ard_id', this.dataUsuario[0].ard_id);
+    dataPost.append('p_usu_id', this.dataUsuario[0].usu_id);
+    dataPost.append('p_eve_fecini', this.eve_fecini);
+    dataPost.append('p_eve_horini', this.eve_horini);
+    dataPost.append('p_eve_fecfin', this.eve_fecfin);
+    dataPost.append('p_eve_horfin', this.eve_horfin);
+    dataPost.append('p_eve_nombre', this.eve_nombre);
+    dataPost.append('p_eve_aliasn', this.eve_aliasn);
+    dataPost.append('p_eve_lugars', this.eve_lugars);
+    dataPost.append('p_eve_observ', this.eve_observ);
+    dataPost.append('p_eve_reqrec', this.eve_reqrec);
+    dataPost.append('p_eve_monval', montoFloat.toString());
+
+    for (var i = 0; i < this.files.length; i++) {
+      dataPost.append('p_eve_jsdpdf[]', this.files[i]);
+    }
+
+    this.calendarioService.registrarEventos(dataPost).subscribe((data: any) => {
+      console.log("data:", data);
+      this.mensa = data[0].mensa;
+      const errorCode = data[0].error;
+      const icon = this.getIconByErrorCode(errorCode);
+      
+      if (errorCode === 0) {
+        Swal.fire({
+          title: 'Éxito',
+          text: 'El evento ha sido registrado correctamente.',
+          icon: 'success',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Aceptar',
+        }).then(() => {
+          this.goBackTo();
+        });
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: this.mensa,
+          icon: icon,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Aceptar',
+        });
+      }
+    });
+  }
+
+
+  /* registrarEventos() {
     const fileNames = this.files.map(file => file.name);
     const montoLimpio = this.eve_monval ? this.eve_monval.replace('S/.', '').replace(',', '') : '';
     const montoFloat = parseFloat(montoLimpio);
@@ -434,15 +484,13 @@ export class EventoCrearComponent implements OnInit {
     this.calendarioService.registrarEventos(post).subscribe({
       next: (data: any) => {
         console.log("data:", data);
-        this.mensa = data[0].mensa
-        const errorCode = data[0].error
-
-        const icon = this.getIconByErrorCode(errorCode)
-
-        this.errorSweetAlert(icon, this.goBackTo.bind(this))
+        this.mensa = data[0].mensa;
+        const errorCode = data[0].error;
+        const icon = this.getIconByErrorCode(errorCode);
+        this.errorSweetAlert(icon, this.goBackTo.bind(this));
       }
     })
-  }
+  } */
 
   // cerrarApertura(ccp_id: any) {
   //   console.log("ccp_id: ", ccp_id);
