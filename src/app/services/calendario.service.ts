@@ -96,19 +96,19 @@ export class CalendarioService {
       );
   }
   
-  geteliminararchivos(data: any) {
+  getVisualizarArchivos(data: any) {
     return this.httpClientUtils
-      .postQuery('geteliminararchivos', data)
+      .postQuery('calendario/eventos/visualizarArchivos', data)
       .pipe(
         map((data) => {
           return data;
         })
       );
   }
-  
-  getVisualizarArchivos(data: any) {
+
+  geteliminararchivos(data: any) {
     return this.httpClientUtils
-      .postQuery('getvisualizarArchivos', data)
+      .postQuery('calendario/eventos/eliminararchivos', data)
       .pipe(
         map((data) => {
           return data;

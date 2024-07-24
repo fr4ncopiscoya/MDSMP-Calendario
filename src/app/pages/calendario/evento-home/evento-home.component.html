@@ -153,17 +153,17 @@
                                                         <tbody>
                                                             <tr *ngFor="let item of dataArchivos" class="parentesco-data-row"
                                                                 style="text-align: center;">
-                                                                <td>{{item.com_nompdf}}</td>
+                                                                <td>{{item.epf_nompdf}}</td>
                                                                 <td class="text-center">
-                                                                    <button class="btn-icon btn btn-danger"
-                                                                        (click)="eliminararchivos(item.com_id);"><i
-                                                                            class="pe-7s-trash btn-icon-wrapper"
-                                                                            style="margin:0px;"></i></button>&nbsp;
-                                                                    <button class="btn-icon btn btn-primary"
-                                                                        (click)="linkDescargar(item.com_nomrut,item.com_nompdf,fb_evearchivos)"><i
-                                                                            class="pe-7s-look btn-icon-wrapper"
-                                                                            title="Descargar Base Legal"
-                                                                            style="margin:0px;"></i></button>
+                                                                    <button type="button" title="" style="margin-left: 2px;"
+                                                                        class="btn btn-sm btn-danger btn-icon" (click)="eliminararchivos(item.epf_id,item.epf_nomfil);">
+                                                                        <i class="ri-close-fill align-middle fs-20"></i>
+                                                                    </button>
+                                                                    <button type="button" title="Editar" (click)="linkDescargar(item.epf_nomfil,item.epf_nompdf,fb_evearchivos)"
+                                                                        style="margin-left: 2px;"
+                                                                        class="btn btn-sm btn-primary btn-icon">
+                                                                        <i class="ri-eye-fill align-middle fs-20"></i>
+                                                                    </button>
                                                                 </td>
                                                             </tr>
                                                         </tbody>

@@ -307,10 +307,7 @@ export class EventoHomeComponent implements OnInit {
     let post = {
       p_eve_id: this.fb_evearchivos,
       p_epf_activo: 1
-    };
-    
-    this.spinner.show();
-    
+    };    
     this.calendarioService.getArchivosEventosSel(post).subscribe({
       next: (data: any) => {
         this.spinner.hide();
@@ -333,6 +330,7 @@ export class EventoHomeComponent implements OnInit {
   }
 
   uploadFilesarchivos() {
+    this.spinner.show();
     const dataPost = new FormData();
     dataPost.append('eve_id', this.fb_evearchivos.toString());
     dataPost.append('p_usu_id',JSON.parse(localStorage.getItem("dataUsuario")).numid);
@@ -340,21 +338,22 @@ export class EventoHomeComponent implements OnInit {
       dataPost.append('files_archivos[]', this.filesarchivos[i]);
     }
     this.calendarioService.getUploadFilesarchivos(dataPost).subscribe((data: any) => {
-      console.log(data);
-      if (data.p_error == 0) {
+      if (data[0].error == 0) {
         this.filesarchivos = [];
         this.fillarchivosSel();
         Swal.fire({
           title: 'Exito',
-          text: 'Sus ficheros se cargaron correctamente.',
+          text: data[0].mensa,
           icon: 'success',
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Aceptar',
         });
-      } else {
+      } else if(data[0].error < 0){
+        this.filesarchivos = [];
+        this.spinner.hide();
         Swal.fire({
           title: 'Error',
-          text: 'Ocurrio un error al cargar sus archivos, intentelo nuevamente.',
+          text: data[0].mensa,
           icon: 'error',
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Aceptar',
@@ -364,9 +363,10 @@ export class EventoHomeComponent implements OnInit {
     (document.querySelector('#botonsubcomuni') as HTMLElement).style.display = 'none';
   }
 
-  eliminararchivos(codig: number) {
+  eliminararchivos(codig: number, ruta: string) {
     const data_post = {
-      p_com_id: codig
+      p_epf_id: codig,
+      ruta: ruta
     };
     this.calendarioService.geteliminararchivos(data_post).subscribe((data: any) => {
       Swal.fire({
@@ -391,7 +391,7 @@ export class EventoHomeComponent implements OnInit {
               }).then((result) => {
                 if (result.value) {
                   setTimeout(() => {
-                    //this.fillarchivosSel();
+                    this.fillarchivosSel();
                   }, 300);
                 }
               });
@@ -429,11 +429,11 @@ export class EventoHomeComponent implements OnInit {
     }
   }
 
-  linkDescargar(ruta: string, file: string, cnv_id: number) {
+  linkDescargar(ruta: string, file: string, id: number) {
     const data_post = {
-      cnv_ruta: ruta,
-      cnv_nombre: file,
-      cnv_id: cnv_id
+      ruta: ruta,
+      nombre: file,
+      id: id
     };
     this.calendarioService.getVisualizarArchivos(data_post).subscribe((data: any) => {
       if (data.p_error==0) {
