@@ -126,7 +126,7 @@ export class CalendarioComponent implements OnInit {
           this.events.push({
             start: startOfDay(new Date(item.eve_fhoini)),
             end: new Date(item.eve_fhofin),
-            title: item.eve_nombre,
+            title: 'Nombre: ' + item.eve_nombre + '  |  ' + 'Fecha Inicio: ' + item.eve_fecini + '  |  ' + 'Fecha Fin: ' + item.eve_fecfin + '  |  ' + 'Area: ' + item.ard_descri,
             color: { ...colors['yellow'] },
             actions: this.actions,
             allDay: true,

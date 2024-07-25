@@ -44,10 +44,11 @@ export class EventoHomeComponent implements OnInit {
 
   //DATA
   datosCajaChica: any;
-  datosPeriodo  : any;
-  dataUsuario   : any;
-  datosEvento   : any;
-  dataArchivos  : any;
+  datosPeriodo: any;
+  dataUsuario: any;
+  dataSistema: any;
+  datosEvento: any;
+  dataArchivos: any;
 
   fb_evearchivos: number = 0;
   numconveleg: number = 0;
@@ -59,6 +60,10 @@ export class EventoHomeComponent implements OnInit {
   ard_id: number
   eve_fecini: string
   eve_fecfin: string
+  eve_alias: string
+
+  chk_btn: boolean = true;
+  txt_chekbox: string;
 
   mensa: string;
   area: string;
@@ -73,22 +78,27 @@ export class EventoHomeComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
     this.dtOptionsModal = {
       info: false,
-      scrollY: '520px',
+      scrollY: '500px',
       columnDefs: [
       ],
       language: {
       },
     }
-    
+
     this.appComponent.login = false;
-    const dataSistema = localStorage.getItem('dataUsuario');
-    this.dataUsuario = JSON.parse(dataSistema)
+
     const dataUser = localStorage.getItem('dataUser');
     this.dataUsuario = JSON.parse(dataUser)
+    console.log("dataUsuario: ", this.dataUsuario);
+    console.log("area: ", this.area);
     this.area = this.dataUsuario[0].ard_descri
+
+    const dataSistema = localStorage.getItem('dataUsuario');
+    this.dataSistema = JSON.parse(dataSistema)
+
     this.listarEventos();
   }
 
@@ -138,11 +148,37 @@ export class EventoHomeComponent implements OnInit {
       // confirmButtonText: "Si, anular"
     }).then((result) => {
       if (result.isConfirmed) {
-        // this.cerrarApertura(data.ccp_id);
+        this.anularEvento(data)
       }
     });
   }
 
+  anularEvento(data: any) {
+    console.log("entras", data);
+
+    let post = {
+      p_eve_id: data.eve_id,
+      p_eve_chkmov: data.eve_estado,
+      p_ccv_usumov: this.dataUsuario[0].usu_id
+    }
+    console.log("post: ", post);
+
+    this.calendarioService.anularEvento(post).subscribe({
+      next: (data: any) => {
+        console.log("result-vale:", data);
+        this.mensa = data[0].mensa
+        const errorCode = data[0].error
+        const icon = this.getIconByErrorCode(errorCode)
+        this.errorSweetAlert(icon, this.goBackTo.bind(this))
+        this.listarEventos()
+      }
+    })
+  }
+
+  checkboxChange(value: any) {
+    console.log("estado: ", value);
+    this.listarEventos();
+  }
 
   modalRegistarEvento(template: TemplateRef<any>, data: any, ver: boolean) {
     let value = 0;
@@ -159,10 +195,10 @@ export class EventoHomeComponent implements OnInit {
     this.modalRefs['registar-evento'] = this.modalService.show(template, { id: 1, class: 'modal-lg', backdrop: 'static', keyboard: false });
   }
 
-  modalArchivosEvento(template: TemplateRef<any> , data: any) {
+  modalArchivosEvento(template: TemplateRef<any>, data: any) {
     this.fb_evearchivos = data['eve_id'];
     this.fillarchivosSel();
-    this.modalRefs['archivos-evento']  = this.modalService.show(template, { id: 1, class: 'modal-lg', backdrop: 'static', keyboard: false });
+    this.modalRefs['archivos-evento'] = this.modalService.show(template, { id: 1, class: 'modal-lg', backdrop: 'static', keyboard: false });
   }
   //========================================================================================================================
 
@@ -224,8 +260,10 @@ export class EventoHomeComponent implements OnInit {
     // this.consultarCajaChica()
   }
 
-  goToCreate(data: any) {
-    console.log("data: ", data);
+  goToCreate(eve_id: any) {
+    // this.calendarioService.eve_id = data
+    // console.log("data: ", this.calendarioService.eve_id);
+    localStorage.setItem('eve_id', eve_id)
     this.router.navigateByUrl('/evento-crear')
   }
 
@@ -245,11 +283,20 @@ export class EventoHomeComponent implements OnInit {
   //=====================
 
   listarEventos() {
+    console.log("value: ", this.chk_btn);
+    if (this.chk_btn) {
+      this.txt_chekbox = "ACTIVO"
+    }
+    else {
+      this.txt_chekbox = "INACTIVO"
+    }
     let post = {
       p_eve_id: 0,
       p_ard_id: this.dataUsuario[0].ard_id,
       p_eve_fecini: this.eve_fecini,
-      p_eve_fecfin: this.eve_fecfin
+      p_eve_fecfin: this.eve_fecfin,
+      p_eve_aliasn: this.eve_alias,
+      p_eve_activo: this.chk_btn
     };
     console.log(post);
     this.spinner.show();
@@ -284,7 +331,7 @@ export class EventoHomeComponent implements OnInit {
   }
 
   //PARA AGREGAR EL ARCHIVO
-  onSelectarchivos(event:any) {
+  onSelectarchivos(event: any) {
     if (event.addedFiles.length == 1) {
       if (this.filesarchivos.length < 1) {
         this.filesarchivos.push(...event.addedFiles);
@@ -292,7 +339,7 @@ export class EventoHomeComponent implements OnInit {
       } else {
         (document.querySelector('#botonsubcomuni') as HTMLElement).style.display = 'none';
       }
-    }else{
+    } else {
       Swal.fire({
         title: 'Error',
         text: 'Ha intentado subir más de un archivo , porfavor ingresar solo uno',
@@ -303,15 +350,15 @@ export class EventoHomeComponent implements OnInit {
     }
   }
 
-  fillarchivosSel(){
+  fillarchivosSel() {
     let post = {
       p_eve_id: this.fb_evearchivos,
       p_epf_activo: 1
-    };    
+    };
     this.calendarioService.getArchivosEventosSel(post).subscribe({
       next: (data: any) => {
         this.spinner.hide();
-        
+
         console.log(data);
         this.dataArchivos = data;
 
@@ -324,7 +371,7 @@ export class EventoHomeComponent implements OnInit {
     });
   }
 
-  onRemovearchivos(event:any) {
+  onRemovearchivos(event: any) {
     this.filesarchivos.splice(this.filesarchivos.indexOf(event), 1);
     (document.querySelector('#botonsubcomuni') as HTMLElement).style.display = 'none';
   }
@@ -333,7 +380,7 @@ export class EventoHomeComponent implements OnInit {
     this.spinner.show();
     const dataPost = new FormData();
     dataPost.append('eve_id', this.fb_evearchivos.toString());
-    dataPost.append('p_usu_id',JSON.parse(localStorage.getItem("dataUsuario")).numid);
+    dataPost.append('p_usu_id', JSON.parse(localStorage.getItem("dataUsuario")).numid);
     for (var i = 0; i < this.filesarchivos.length; i++) {
       dataPost.append('files_archivos[]', this.filesarchivos[i]);
     }
@@ -348,7 +395,7 @@ export class EventoHomeComponent implements OnInit {
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Aceptar',
         });
-      } else if(data[0].error < 0){
+      } else if (data[0].error < 0) {
         this.filesarchivos = [];
         this.spinner.hide();
         Swal.fire({
@@ -410,7 +457,7 @@ export class EventoHomeComponent implements OnInit {
     });
   }
 
-  convertirNumeroceroIZQ(number:any, width:any) {
+  convertirNumeroceroIZQ(number: any, width: any) {
     var numberOutput = Math.abs(number);
     var length = number.toString().length;
     var zero = "0";
@@ -436,9 +483,9 @@ export class EventoHomeComponent implements OnInit {
       id: id
     };
     this.calendarioService.getVisualizarArchivos(data_post).subscribe((data: any) => {
-      if (data.p_error==0) {
+      if (data.p_error == 0) {
         window.open(data.p_mensa);
-      }else{
+      } else {
         Swal.fire({
           title: 'Error',
           text: data.p_mensa,

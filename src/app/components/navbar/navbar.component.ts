@@ -43,12 +43,8 @@ export class NavbarComponent implements OnInit {
 
     this.calendarioService.listarUsuario(post).subscribe({
       next: (data: any) => {
-        // this.dataUser = data;
         this.usu_nomcom = data[0].usu_nomcom
-        // this.cusuari = data[0].usu_loging;
-        // this.p_usu_id = data[0].usu_id;
         localStorage.setItem('dataUser', JSON.stringify(data))
-        // this.cajachicaService.cusuari = this.cusuari;
       }
     });
   }

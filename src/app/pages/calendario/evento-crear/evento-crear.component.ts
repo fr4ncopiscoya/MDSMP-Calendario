@@ -73,11 +73,13 @@ export class EventoCrearComponent implements OnInit {
   datosCajaChica: any
   datosPeriodo: any
   dataUsuario: any
+  datosEvento: any
 
   cca_anyper: number;
   cca_id: number;
   ccm_monmov: string;
 
+  eve_id: any;
   eve_fecini: string;
   eve_horini: string;
   eve_fecfin: string;
@@ -132,11 +134,23 @@ export class EventoCrearComponent implements OnInit {
 
     this.cajachicaService.cca_anyper = this.cca_anyper
     this.area = this.dataUsuario[0].ard_descri
+    const eve_id = localStorage.getItem('eve_id')
+    if (eve_id !== null) {
+      this.eve_id = eve_id
+      this.listarEventos(this.eve_id)
+      console.log("editar:", this.eve_id);
+    } else {
+      this.eve_id = 0
+      console.log("crear:", this.eve_id);
+    }
   }
 
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
+    localStorage.removeItem('eve_id')
+    console.log("eve-remove", this.eve_id);
+
     // this.dtTriggerModal.unsubscribe();
   }
 
@@ -192,54 +206,38 @@ export class EventoCrearComponent implements OnInit {
     });
   }
 
-  onSelect(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files) {
-      const selectedFiles = Array.from(input.files) as File[];
+  listarEventos(eve_id: number) {
+    let post = {
+      p_eve_id: eve_id,
+      p_ard_id: this.dataUsuario[0].ard_id,
+      p_eve_fecini: this.eve_fecini,
+      p_eve_fecfin: this.eve_fecfin
+    };
+    console.log(post);
+    this.spinner.show();
+    this.calendarioService.listarEventos(post).subscribe({
+      next: (data: any) => {
+        this.spinner.hide();
+        console.log(data);
+        this.datosEvento = data;
+        this.eve_fecini = data[0].eve_fecini
+        this.eve_fecfin = data[0].eve_fecfin
+        this.eve_horini = data[0].eve_horini
+        this.eve_horfin = data[0].eve_horfin
+        this.eve_monval = data[0].eve_monval
+        this.eve_nombre = data[0].eve_nombre
+        this.eve_aliasn = data[0].eve_aliasn
+        this.eve_lugars = data[0].eve_lugars
+        this.eve_observ = data[0].eve_observ
+        this.eve_reqrec = data[0].eve_reqrec
+      },
+      error: (error: any) => {
+        this.errorSweetAlert();
+        this.spinner.hide();
+        console.log(error);
+      },
+    });
 
-      // Filtrar archivos válidos y ajustar el número máximo
-      const validFiles = selectedFiles.filter(file => this.validateFile(file));
-
-      // Asegurarse de no exceder el límite máximo de archivos
-      if (this.files.length + validFiles.length > this.maxFiles) {
-        Swal.fire(`Solo puedes subir maximo ${this.maxFiles} archivos.`);
-        // alert(`You can only upload a maximum of ${this.maxFiles} files.`);
-        return;
-      }
-
-      this.files.push(...validFiles);
-    }
-    console.log("files: ", this.files);
-  }
-
-  onDrop(event: DragEvent): void {
-    event.preventDefault();
-    if (event.dataTransfer && event.dataTransfer.files) {
-      const droppedFiles = Array.from(event.dataTransfer.files) as File[];
-
-      // Filtrar archivos válidos y ajustar el número máximo
-      const validFiles = droppedFiles.filter(file => this.validateFile(file));
-
-      if (this.files.length + validFiles.length > this.maxFiles) {
-        Swal.fire(`Solo puedes súbir maximo ${this.maxFiles} archivos.`);
-        // alert(`You can only upload a maximum of ${this.maxFiles} files.`);
-        return;
-      }
-
-      this.files.push(...validFiles);
-    }
-  }
-
-  onDragOver(event: DragEvent): void {
-    event.preventDefault();
-  }
-
-  onRemove(file: File): void {
-    this.files = this.files.filter(f => f !== file);
-  }
-
-  getFileSrc(file: File): string {
-    return file.type.startsWith('image/') ? URL.createObjectURL(file) : 'assets/images/new-document.png';
   }
 
   private validateFile(file: File): boolean {
@@ -405,66 +403,65 @@ export class EventoCrearComponent implements OnInit {
     })
   }
 
+  // registrarEventos() {
+  //   const dataPost = new FormData();
+
+  //   const montoLimpio = this.eve_monval ? this.eve_monval.replace('S/.', '').replace(',', '') : '';
+  //   const montoFloat = parseFloat(montoLimpio);
+
+  //   dataPost.append('p_eve_id', '0');
+  //   dataPost.append('p_ard_id', this.dataUsuario[0].ard_id);
+  //   dataPost.append('p_usu_id', this.dataUsuario[0].usu_id);
+  //   dataPost.append('p_eve_fecini', this.eve_fecini);
+  //   dataPost.append('p_eve_horini', this.eve_horini);
+  //   dataPost.append('p_eve_fecfin', this.eve_fecfin);
+  //   dataPost.append('p_eve_horfin', this.eve_horfin);
+  //   dataPost.append('p_eve_nombre', this.eve_nombre);
+  //   dataPost.append('p_eve_aliasn', this.eve_aliasn);
+  //   dataPost.append('p_eve_lugars', this.eve_lugars);
+  //   dataPost.append('p_eve_observ', this.eve_observ);
+  //   dataPost.append('p_eve_reqrec', this.eve_reqrec);
+  //   dataPost.append('p_eve_monval', montoFloat.toString());
+
+  //   for (var i = 0; i < this.files.length; i++) {
+  //     dataPost.append('p_eve_jsdpdf[]', this.files[i]);
+  //   }
+
+  //   this.calendarioService.registrarEventos(dataPost).subscribe((data: any) => {
+  //     console.log("data:", data);
+  //     this.mensa = data[0].mensa;
+  //     const errorCode = data[0].error;
+  //     const icon = this.getIconByErrorCode(errorCode);
+
+  //     if (errorCode === 0) {
+  //       Swal.fire({
+  //         title: 'Éxito',
+  //         text: 'El evento ha sido registrado correctamente.',
+  //         icon: 'success',
+  //         confirmButtonColor: '#3085d6',
+  //         confirmButtonText: 'Aceptar',
+  //       }).then(() => {
+  //         this.goBackTo();
+  //       });
+  //     } else {
+  //       Swal.fire({
+  //         title: 'Error',
+  //         text: this.mensa,
+  //         icon: icon,
+  //         confirmButtonColor: '#3085d6',
+  //         confirmButtonText: 'Aceptar',
+  //       });
+  //     }
+  //   });
+  // }
+
+
   registrarEventos() {
-    const dataPost = new FormData();
-
-    const montoLimpio = this.eve_monval ? this.eve_monval.replace('S/.', '').replace(',', '') : '';
-    const montoFloat = parseFloat(montoLimpio);
-
-    dataPost.append('p_eve_id', '0');
-    dataPost.append('p_ard_id', this.dataUsuario[0].ard_id);
-    dataPost.append('p_usu_id', this.dataUsuario[0].usu_id);
-    dataPost.append('p_eve_fecini', this.eve_fecini);
-    dataPost.append('p_eve_horini', this.eve_horini);
-    dataPost.append('p_eve_fecfin', this.eve_fecfin);
-    dataPost.append('p_eve_horfin', this.eve_horfin);
-    dataPost.append('p_eve_nombre', this.eve_nombre);
-    dataPost.append('p_eve_aliasn', this.eve_aliasn);
-    dataPost.append('p_eve_lugars', this.eve_lugars);
-    dataPost.append('p_eve_observ', this.eve_observ);
-    dataPost.append('p_eve_reqrec', this.eve_reqrec);
-    dataPost.append('p_eve_monval', montoFloat.toString());
-
-    for (var i = 0; i < this.files.length; i++) {
-      dataPost.append('p_eve_jsdpdf[]', this.files[i]);
-    }
-
-    this.calendarioService.registrarEventos(dataPost).subscribe((data: any) => {
-      console.log("data:", data);
-      this.mensa = data[0].mensa;
-      const errorCode = data[0].error;
-      const icon = this.getIconByErrorCode(errorCode);
-      
-      if (errorCode === 0) {
-        Swal.fire({
-          title: 'Éxito',
-          text: 'El evento ha sido registrado correctamente.',
-          icon: 'success',
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: 'Aceptar',
-        }).then(() => {
-          this.goBackTo();
-        });
-      } else {
-        Swal.fire({
-          title: 'Error',
-          text: this.mensa,
-          icon: icon,
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: 'Aceptar',
-        });
-      }
-    });
-  }
-
-
-  /* registrarEventos() {
-    const fileNames = this.files.map(file => file.name);
     const montoLimpio = this.eve_monval ? this.eve_monval.replace('S/.', '').replace(',', '') : '';
     const montoFloat = parseFloat(montoLimpio);
 
     let post = {
-      p_eve_id: 0,
+      p_eve_id: this.eve_id,
       p_ard_id: this.dataUsuario[0].ard_id,
       p_usu_id: this.dataUsuario[0].usu_id,
       p_eve_fecini: this.eve_fecini,
@@ -477,7 +474,7 @@ export class EventoCrearComponent implements OnInit {
       p_eve_observ: this.eve_observ,
       p_eve_reqrec: this.eve_reqrec,
       p_eve_monval: montoFloat,
-      p_eve_jsdpdf: fileNames
+      // p_eve_jsdpdf: fileNames
     }
     console.log("post: ", post);
 
@@ -490,7 +487,7 @@ export class EventoCrearComponent implements OnInit {
         this.errorSweetAlert(icon, this.goBackTo.bind(this));
       }
     })
-  } */
+  }
 
   // cerrarApertura(ccp_id: any) {
   //   console.log("ccp_id: ", ccp_id);
@@ -522,10 +519,6 @@ export class EventoCrearComponent implements OnInit {
     } catch (error) {
       console.error('Error stringifying data:', error);
     }
-  }
-
-  GenerarReporte(data: any) {
-
   }
 
 }

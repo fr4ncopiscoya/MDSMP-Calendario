@@ -112,56 +112,6 @@
                                             <ckeditor [editor]="Editor" [(ngModel)]="eve_reqrec" [data]=""></ckeditor>
                                         </div>
 
-                                        <!-- Row5 -->
-                                        <div class="col-md-12 mb-2">
-                                            <label for="" class=" form-label col-form-label col-form-label-sm">ADJUNTAR
-                                                ARCHIVOS * <span style="color: red;">Por favor solo adjuntar como máximo
-                                                    5 archivos
-                                                    y que el
-                                                    nombre de los archivos no contengan tilde</span> * </label>
-                                            <div class="dropzone" (drop)="onDrop($event)"
-                                                (dragover)="onDragOver($event)">
-                                                <div class="fallback">
-                                                    <input name="file" type="file" multiple (change)="onSelect($event)"
-                                                        class="file-input">
-                                                </div>
-                                                <div class="dz-message needsclick">
-                                                    <div class="mb-3">
-                                                        <i class="display-4 text-muted ri-upload-cloud-2-fill"></i>
-                                                    </div>
-                                                    <h4>Arrastra tus archivos o has click aqui para adjuntarlos</h4>
-                                                </div>
-                                            </div>
-
-                                            <ul class="list-unstyled mb-0" id="dropzone-preview">
-                                                <li *ngFor="let f of files" class="mt-2" id="dropzone-preview-list">
-                                                    <div class="border rounded">
-                                                        <div class="d-flex p-2">
-                                                            <div class="flex-shrink-0 me-3">
-                                                                <div class="avatar-sm bg-light rounded">
-                                                                    <img [src]="getFileSrc(f)"
-                                                                        class="img-fluid rounded d-block"
-                                                                        alt="File preview" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="flex-grow-1">
-                                                                <div class="pt-1">
-                                                                    <h5 class="fs-14 mb-1">{{ f.name }}</h5>
-                                                                    <p class="fs-13 text-muted mb-0">{{ f.size |
-                                                                        fileSize }}</p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="flex-shrink-0 ms-3">
-                                                                <button (click)="onRemove(f)"
-                                                                    class="btn btn-sm btn-danger">Delete</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul>
-
-                                        </div>
-
                                     </div>
                                 </div>
                             </div>

@@ -45,6 +45,12 @@
                 <div class="col-12">
                     <div class="card card-h-100">
                         <div class="card-body">
+                            <div class="form-check form-switch form-switch-lg" style="margin: 15px 3px;">
+                                <input type="checkbox" class="form-check-input" (change)="checkboxChange(this.chk_btn)"
+                                    id="customSwitchsizelg" [(ngModel)]="chk_btn">
+                                <label class="form-check-label" for="customSwitchsizelg"
+                                    style="font-weight: bold;">{{txt_chekbox}}</label>
+                            </div>
                             <div>
                                 <table id="tablaAplicacion" datatable [dtOptions]="dtOptionsModal"
                                     [dtTrigger]="dtTrigger" class=" align-middle mb-0 " style="width: 100%;">
@@ -74,17 +80,19 @@
                                                 }}</td>
                                             <td>
                                                 <div class="d-flex center" style="justify-content: center;">
-                                                    <button type="button" title="Editar" (click)="goToCreate(data)"
-                                                        style="margin-left: 2px;"
+                                                    <button type="button" title="Editar"
+                                                        (click)="goToCreate(data.eve_id)" style="margin-left: 2px;"
                                                         class="btn btn-sm btn-primary btn-icon">
                                                         <i class="ri-pencil-fill align-middle fs-20"></i>
                                                     </button>
-                                                    <button type="button" title="" style="margin-left: 2px;"
+                                                    <button type="button" title="" style="margin-left: 2px;" (click)="sweetAlertValidar(data,'
+                                                            Estas seguro de anular este evento?','Si, anular evento')"
                                                         class="btn btn-sm btn-danger btn-icon">
                                                         <i class="ri-close-fill align-middle fs-20"></i>
                                                     </button>
                                                     <button type="button" title="" style="margin-left: 2px;"
-                                                        class="btn btn-sm btn-success btn-icon" (click)="modalArchivosEvento(ArchivosEvento,data)">
+                                                        class="btn btn-sm btn-success btn-icon"
+                                                        (click)="modalArchivosEvento(ArchivosEvento,data)">
                                                         <i class="ri-contacts-book-upload-fill align-middle fs-20"></i>
                                                     </button>
                                                 </div>
@@ -135,15 +143,17 @@
                                                     <ngx-dropzone (change)="onSelectarchivos($event)" [accept]="'.pdf'"
                                                         maxFiles="1">
                                                         <ngx-dropzone-label>Carga tus archivo aqui</ngx-dropzone-label>
-                                                        <ngx-dropzone-preview *ngFor="let f of filesarchivos" [removable]="true"
-                                                            (removed)="onRemovearchivos(f)">
-                                                            <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+                                                        <ngx-dropzone-preview *ngFor="let f of filesarchivos"
+                                                            [removable]="true" (removed)="onRemovearchivos(f)">
+                                                            <ngx-dropzone-label>{{ f.name }} ({{ f.type
+                                                                }})</ngx-dropzone-label>
                                                         </ngx-dropzone-preview>
                                                     </ngx-dropzone>
                                                     <button (click)="uploadFilesarchivos();" id="botonsubcomuni"
                                                         class="btn-icon btn btn-primary btn-block"
                                                         style="margin-bottom: 5px;margin-top: 5px;display: none;width: 100%;"><i
-                                                            class="pe-7s-wallet btn-icon-wrapper"></i>Cargar Documento</button>
+                                                            class="pe-7s-wallet btn-icon-wrapper"></i>Cargar
+                                                        Documento</button>
                                                     <table class="table table-bordered table-hover">
                                                         <thead>
                                                             <tr class="text-center">
@@ -151,15 +161,18 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr *ngFor="let item of dataArchivos" class="parentesco-data-row"
-                                                                style="text-align: center;">
+                                                            <tr *ngFor="let item of dataArchivos"
+                                                                class="parentesco-data-row" style="text-align: center;">
                                                                 <td>{{item.epf_nompdf}}</td>
                                                                 <td class="text-center">
-                                                                    <button type="button" title="" style="margin-left: 2px;"
-                                                                        class="btn btn-sm btn-danger btn-icon" (click)="eliminararchivos(item.epf_id,item.epf_nomfil);">
+                                                                    <button type="button" title=""
+                                                                        style="margin-left: 2px;"
+                                                                        class="btn btn-sm btn-danger btn-icon"
+                                                                        (click)="eliminararchivos(item.epf_id,item.epf_nomfil);">
                                                                         <i class="ri-close-fill align-middle fs-20"></i>
                                                                     </button>
-                                                                    <button type="button" title="Editar" (click)="linkDescargar(item.epf_nomfil,item.epf_nompdf,fb_evearchivos)"
+                                                                    <button type="button" title="Editar"
+                                                                        (click)="linkDescargar(item.epf_nomfil,item.epf_nompdf,fb_evearchivos)"
                                                                         style="margin-left: 2px;"
                                                                         class="btn btn-sm btn-primary btn-icon">
                                                                         <i class="ri-eye-fill align-middle fs-20"></i>

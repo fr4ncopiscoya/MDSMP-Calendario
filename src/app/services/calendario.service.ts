@@ -9,6 +9,7 @@ import { HttpClientUtils } from '../utils/http-client.utils';
 export class CalendarioService {
 
   private data: any;
+  eve_id: any;
 
 
   constructor(private httpClientUtils: HttpClientUtils, private http: HttpClient) { }
@@ -75,7 +76,17 @@ export class CalendarioService {
         })
       );
   }
-  
+
+  anularEvento(data: any) {
+    return this.httpClientUtils
+      .postQuery('calendario/eventos/anular', data)
+      .pipe(
+        map((data) => {
+          return data;
+        })
+      );
+  }
+
   getUploadFilesarchivos(data: any) {
     return this.httpClientUtils
       .postQuery('calendario/eventos/uploadFilesArchivos', data)
@@ -86,7 +97,7 @@ export class CalendarioService {
       );
   }
 
-  getArchivosEventosSel(data: any){
+  getArchivosEventosSel(data: any) {
     return this.httpClientUtils
       .postQuery('calendario/eventos/Archivossel', data)
       .pipe(
@@ -95,7 +106,7 @@ export class CalendarioService {
         })
       );
   }
-  
+
   getVisualizarArchivos(data: any) {
     return this.httpClientUtils
       .postQuery('calendario/eventos/visualizarArchivos', data)

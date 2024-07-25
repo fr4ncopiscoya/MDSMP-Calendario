@@ -179,16 +179,11 @@ export class LoginComponent implements OnInit {
 
             this.nomusu = data[0].nomusu;
             this.desare = data[0].desare;
-            console.log(data);
-
-            // this.dataUsuario = data[0];
-
           } else {
             this.errorSweetAlertUsuario();
             this.nomusu = '';
             this.desare = '';
           }
-          console.log(data);
         }
       },
       error: (error: any) => {
@@ -234,7 +229,7 @@ export class LoginComponent implements OnInit {
             btnLogin.innerHTML = 'Ingresar';
             btnLogin.classList.remove('pe-none', 'btn-load');
 
-            this.router.navigate(['/eventos',]);
+            this.router.navigate(['/dashboard',]);
           }, 2000);
 
         } else {

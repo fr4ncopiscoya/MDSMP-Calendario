@@ -33,6 +33,7 @@ import { CalendarioComponent } from './pages/calendario/calendario/calendario.co
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { DatePipe } from '@angular/common';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { DatePipe } from '@angular/common';
 
     FileSizePipe,
     FilePreviewPipe,
-    CalendarioComponent
+    CalendarioComponent,
+    DashboardComponent
   ],
   imports: [
     InputMaskModule.forRoot({ inputSelector: 'input', isAsync: true }),
